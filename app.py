@@ -53,8 +53,11 @@ if file:
             df = preprocess_data_for_prophet(df, ds_column, y_column)
 
             forecast, mae, rmse, r2, model, test_data = forecast_prophet(df)
-
-            st.markdown("### 🔢 Accuracy Metrics")
+            st.subheader(f"📊{model_choice} Forecasted Results")
+            st.write(forecast.head())
+            csv = forecast.to_csv(index=False).encode('utf-8')
+            st.download_button("📥 Download Forecast Data", csv, "prophet_forecast.csv", "text/csv")
+            st.markdown(f"### 🧮 {model_choice} Model Accuracy Metrics")
             st.metric("MAE", f"{mae:.2f}")
             st.metric("RMSE", f"{rmse:.2f}")
             st.metric("R²", f"{r2:.2f}")
@@ -66,14 +69,19 @@ if file:
             x_dates, y_true, y_pred, mae, rmse, r2 = train_and_evaluate_model(
                 model_choice, data.copy(), ds_column, y_column
             )
-
+            
             result_df = pd.DataFrame({
                 ds_column: x_dates,
                 "Actual": y_true,
                 "Predicted": y_pred
             })
+            st.subheader(f"📊{model_choice} Forecasted Results")
+            st.write(result_df.head())
+            csv = result_df.to_csv(index=False).encode('utf-8')
+            st.download_button("📥 Download Forecast Data", csv, "ml_forecast.csv", "text/csv")
+            
 
-            st.markdown("### 🔢 Accuracy Metrics")
+            st.markdown(f"### 🧮 {model_choice} Model Accuracy Metrics")
             st.metric("MAE", f"{mae:.2f}")
             st.metric("RMSE", f"{rmse:.2f}")
             st.metric("R²", f"{r2:.4f}")
